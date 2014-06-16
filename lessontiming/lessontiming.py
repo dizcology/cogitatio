@@ -1,4 +1,4 @@
-from docx import *
+from docx import *  #pip install python-docx
 import re
 import sys,os,time
 from comtypes.client import CreateObject
@@ -9,6 +9,7 @@ from tkFileDialog import askopenfilename
 from parseOSfile import parseOSfile
 from lessonitemstats import getlessonitemstats
 from subprocess import Popen
+import datetime
 
 Tk().withdraw()
 if len(sys.argv) > 1:
@@ -96,7 +97,7 @@ def lessonStats(itemstats):
 
     return lessonstats
 
-csvfilename = filepath + lesson + '_timing.csv'
+csvfilename = filepath + lesson + '_timing_' + datetime.datetime.now().strftime("%Y%m%d_%H%M") + '.csv'
 warning = False
 with open(csvfilename,'w') as csvfile:
     csvfile.write('item,time\n')
