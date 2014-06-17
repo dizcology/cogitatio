@@ -26,6 +26,14 @@ def parseOSfile(osfn):
     for tab in osfile.tables:
     # Next, go through the tables.
         branchpaths = []        # Keep track of "undefined" branches - i.e. those not defined by strength and speed
+        if  len(tab.columns)==1:
+            col=tab.columns[0]
+            for par in col.cells[0].paragraphs+col.cells[1].paragraphs: #temporary fix until everyone uses the new templates of script_drafter
+                if re.match(' ?[0-9][0-9][0-9]?\.',par.text):
+                    itemno = par.text.split('.')[0].replace(' ','').zfill(3)
+            for path in truepaths:
+                paths[path].append(itemno.encode('ascii'))
+            continue
         if len(tab.columns[0].cells) > 1:
             defaultitemno = tab.columns[0].cells[1].paragraphs[0].text.split('.')[0].replace(' ','').zfill(3)
             # defaultitemno is the fallback if the OS describes the branch as 'same as...'.
