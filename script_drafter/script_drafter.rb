@@ -10,7 +10,9 @@ require_relative 'docx_files.rb'
 
 $PATH=""
 
-$PATH="C:/Users/yliu/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
+username=ENV['USERNAME']
+
+$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
 
 ext=".docx"
