@@ -1,5 +1,6 @@
 require 'rubygems'
-require 'zip/zip' # rubyzip gem
+require 'zip/zip' # gem install zip-zip (maybe after gem install rubyzip)
+#require 'rubyzip'
 require 'nokogiri'
 require 'fileutils'
 require 'io/console'

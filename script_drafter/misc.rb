@@ -28,6 +28,10 @@ class NilClass
   def remove
     self
   end
+  
+  def strike!
+    self
+  end
 end
 
 class Array
