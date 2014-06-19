@@ -348,6 +348,8 @@ class DOCX
 
     pattern=[0,0,19,0,19] #[0,0,7,0,19]  #for the 5 rows in each table
     
+    @doc.at(".//w:tbl").remove #remove the "file team" table
+    
     @doc.at(".//w:body").children.each do |tbl|  
     
       next if tbl.name!="tbl"
@@ -358,7 +360,7 @@ class DOCX
 
       nrow=rows.size
       
-      next if nrow<4  #bad!
+      #next if nrow<4  #bad!
       
       rows[nrow-4].xpath(".//w:tc").each do |cell|
       
@@ -372,7 +374,7 @@ class DOCX
         end
       end
 
-      
+
       if nrow==5
         i=0 #row index of the table
       else
@@ -398,6 +400,7 @@ class DOCX
           end
         end
         i+=1
+
       end
     end
   end
