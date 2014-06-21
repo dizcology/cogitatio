@@ -213,3 +213,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+lessontiming/test.vbs
+lessontiming/build.bat
+lessontiming/test.vbs
+lessontiming/lessonitemstats.spec
+lessontiming/lessontiming.spec
+*.vbs
