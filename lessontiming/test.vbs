@@ -1,1 +1,0 @@
-CreateObject("SAPI.SpVoice").Speak"We need to subtract the length of the first part of the distance from the total distance."
