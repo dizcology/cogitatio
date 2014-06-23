@@ -118,7 +118,7 @@ class DOCX
 
             rto=nn.at(".//w:r")
             
-            cnt.children.each do |p|
+            cnt.children.to_a.reverse.each do |p|
               if p.name=="p"  || p.name=="tbl"
               
                 p.remove_comments

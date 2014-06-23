@@ -13,7 +13,7 @@ $PATH=""
 
 username=ENV['USERNAME']
 
-$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/031/"  #path to the files
+$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
 
 ext=".docx"
