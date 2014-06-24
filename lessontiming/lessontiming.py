@@ -71,9 +71,7 @@ lessoncoefficients = {
 
 def timeFormat(time):
     '''Format a time in seconds as mm:ss.'''
-    #minutes = int(time/60)
-    #seconds = int(round(time-minutes*60))
-    #return str(minutes) + ':' + str(seconds).zfill(2)
+   
     return str(datetime.timedelta(seconds=time))[0:7]
 
 def predLength(stats,coefs):
