@@ -15,7 +15,7 @@ username=ENV['USERNAME']
 
 $PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
-$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
+$PATH="" unless username=="yliu"
 
 
 ext=".docx"
