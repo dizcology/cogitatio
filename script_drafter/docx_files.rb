@@ -430,7 +430,7 @@ class DOCX
     
     @doc.at(".//w:body").children.each do |n|
       
-      if n.name=="p" && n.content.downcase.include?("stage")
+      if n.name=="p" && n.content.downcase.stage?
 
         $item=100*(1+$item/100)
         $item+=10 #a new stage carries implicit $new
@@ -541,6 +541,10 @@ class DOCX
           
 
             row[1].xpath(".//w:commentReference").each do |cr|
+              if target.nil? 
+                print row[1].content
+                gets
+              end
               target << [19, $comments[cr.attribute("id").to_s.strip]]
               
             end

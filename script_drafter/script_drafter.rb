@@ -15,6 +15,8 @@ username=ENV['USERNAME']
 
 $PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
+$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
+
 
 ext=".docx"
 os="_OS"
@@ -117,7 +119,7 @@ $ke=19:KE note style
 $cmt=20:comment
 =end
 
-
+$stage_names=["introduction", "homework", "mental", "warm", "material", "practice", "review", "conclusion", "quiz", "exam", "stage"]
 
 $tag={"new"=>"$new","cut"=>"$cut","weak"=>"$weak","average"=>"$average","strong"=>"$strong","tutor"=>"$tutor", "screen"=>"$screen", "insb"=>"$insb", "insa"=>"$insa",  "OS"=>"$OS", "stage"=>"$stage", "branch"=>"$branch", "endbranch"=>"$endbranch","end"=>"$end"} #insb and insa are forward- and reverse-scaffolding
 $type=["$note","$line","$line","$line","$line","$answer", "$nothing", "$bb", "$line","$line", "$line","$line","$answer", "$nothing", "$stage", "$OS","$OS", "$OS", "$OS", "$note", "$CMR"]  #key strings to replace, indices following the same scheme as above!

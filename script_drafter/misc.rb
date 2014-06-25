@@ -10,6 +10,16 @@ class String
     self.gsub!(original, new)
     self
   end
+  
+  def stage?
+    $stage_names.each do |sn|
+      if self.include?(sn)
+        return true
+      end
+    end
+    
+    return false
+  end
 end
 
 class NilClass
