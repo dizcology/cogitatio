@@ -267,7 +267,7 @@ class DOCX
           cc=t.inner_html.match(/\$item(\d{1})/)[1].to_i
           t.rep("$item"+cc.to_s,it[cc])
 
-          t.rep("$type"+cc.to_s, "Theory") #HERE
+          t.rep("$type"+cc.to_s, "Together") 
 
           t.rep("$COMMENT", $submit_count[itm.to_i].to_s+" submits "+$word_count[itm.to_i].to_s+" words") 
 
