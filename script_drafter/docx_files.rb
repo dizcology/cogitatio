@@ -97,7 +97,7 @@ class DOCX
 
       
       $tag.values.each do |tg|
-        cnt1=cnt1.gsub(tg,"").strip
+        cnt1=cnt1.gsub(tg,"").strip.gsub(/\s/," ").squeeze(" ")
         cnt.rep(tg,"") if cnt!=nil
 
       end   
@@ -360,8 +360,6 @@ class DOCX
 
       nrow=rows.size
       
-      #next if nrow<4  #bad!
-      
       rows[nrow-4].xpath(".//w:tc").each do |cell|
       
         if cell.content.strip.match(/^\d{3}/)
@@ -374,11 +372,8 @@ class DOCX
         end
       end
 
-
-      if nrow==5
-        i=0 #row index of the table
-      else
-        i=1
+      i=5-nrow  #bad, expected row index to copy os stuff from
+      if i==1
         branches.each do |t|
           $os_stuff[t]<<[0,""]  #this takes care of the case when the table does not have the strength row
         end
