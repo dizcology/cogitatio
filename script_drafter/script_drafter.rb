@@ -134,6 +134,24 @@ $preamble=Hash.new("???")
 $adv=["0","5","8"]
 $grp={""=>["All"],"-"=>["All"],"w"=>["Weak"], "a"=>["Average"], "s"=>["Strong"], "wa"=>["Weak", "Average or Strong"], "ws"=>["Weak or Average","Strong"], "as"=>["Average", "Strong"], "was"=>["Weak","Average","Strong"]}
 
+
+$resp=Hash.new
+f=File.open("responses.csv","r")
+f.readline
+f.each do |line|
+  a=line.strie.split(",")
+  if $resp[a[0]].nil?
+    $resp[a[0]]=Array.new
+  end
+  
+  a[2].to_i.times.each do 
+    $resp[a[0]] << [a[1],a[3]]
+  end
+  
+end
+
+
+
 #$content[$item]=Array.new
 
 ####
