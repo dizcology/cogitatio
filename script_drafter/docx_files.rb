@@ -77,11 +77,6 @@ class DOCX
     @cmt.at(".//w:comment")["w:date"]=DateTime.now.to_s
     @cmt.at(".//w:comment")["w:initials"]="KE"
 
-    @doc.xpath(".//w:p").each do |p|
-      if p.content.strip.include?("$characters")
-        p.replace($chr)
-      end
-    end
     
     ary=$os_stuff[numm][1..-2]+$content[numm] #adding os stuff, then copy from lesson plan
     
@@ -114,7 +109,7 @@ class DOCX
         #HERE!!!
         nn=m.dup
 
-        if nn.inner_html.include?($type[i]) || nn.inner_html.include?("$right.") #ugly temp fix
+        if nn.inner_html.include?($type[i])
           
           if i==7 && cnt.xpath(".//w:object").to_a!=[] && cnt.xpath(".//v:formulas").to_a!=[]
             tg=" [MathType]"
@@ -152,16 +147,6 @@ class DOCX
             end 
 
             nn.rep($type[i],cnt2.gsub(rr,""))
-            
-            if i== 5 || i== 12 #add tutor's response
-              
-              begin
-                rsp = $resp[$tutor].sample
-              end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0])
-              
-              $resp_count[$tutor][rsp][1]+=1
-              nn.rep("$right.",rsp)
-            end
             
           end 
 
@@ -364,12 +349,6 @@ class DOCX
     pattern=[0,0,19,0,19] #[0,0,7,0,19]  #for the 5 rows in each table
     
     @doc.at(".//w:tbl").remove #remove the "file team" table
-    
-    $chr=@doc.at(".//w:tbl").dup #copying the characters table
-    
-    $tutor=$chr.rows[0].cells[1].content.strip.downcase #getting tutor's name
-    
-    @doc.at(".//w:tbl").remove  #remove the characters table
     
     @doc.at(".//w:body").children.each do |tbl|  
     

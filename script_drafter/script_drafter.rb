@@ -13,11 +13,7 @@ $PATH=""
 
 username=ENV['USERNAME']
 
-
-$PATH="C:/Users/yliu/SkyDrive/RM-synced/cogitatio/script_drafter/"  #path to the files
-
-$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
-
+$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
 $PATH="" unless username=="yliu"
 
@@ -83,8 +79,6 @@ $submit_count=Hash.new(0)
 
 $word_count=Hash.new(0)
 
-$chr=nil
-
 #Dir.chdir($PATH)
 
 #ft=DOCX.open($PATH+f_template+ext)
@@ -106,7 +100,7 @@ anote=0:note
 $tutor=1:tutor line
 $weak=2:weak line
 $average=3:average line
-$strong=4:strong line
+$strnng=4:strong line
 submit=5:submit
 nextb=6:next in branch
 $screen=7:screen
@@ -134,7 +128,6 @@ $br="In-script branching begins."
 $endbr="In-script branching ends."
 $others=""  #not sure if it is necessary to leave a note about students not mentioned, probably not necessary.
 $sib=", skip if behind"
-$tutor=""
 
 $item=0
 $preamble=Hash.new("???")
@@ -143,23 +136,21 @@ $grp={""=>["All"],"-"=>["All"],"w"=>["Weak"], "a"=>["Average"], "s"=>["Strong"],
 
 
 $resp=Hash.new
-$resp_count=Hash.new
 f=File.open("responses.csv","r")
 f.readline
 f.each do |line|
-  a=line.strip.split(",")
-  name=a[0].strip.downcase
-  if $resp[name].nil?
-    $resp[name]=Array.new
-    $resp_count[name]=Hash.new
+  a=line.strie.split(",")
+  if $resp[a[0]].nil?
+    $resp[a[0]]=Array.new
   end
   
   a[2].to_i.times.each do 
-    $resp[name] << a[1].strip 
+    $resp[a[0]] << [a[1],a[3]]
   end
-  $resp_count[name][a[1].strip] = [a[3].to_i,0]  #cap, count
   
 end
+
+
 
 #$content[$item]=Array.new
 

@@ -186,11 +186,7 @@ def getlessonitemstats(itemfn):
 
         for run in par.runs:
             if not run.strike:
-                for t in run._r.t_lst:
-                    if t.text is None:
-                        pass
-                    else:
-                        text += ' ' + t.text
+                text += ' ' + run.text
         text = re.sub('^ ','',text)
 
         # Track if we're in a No Response branch
