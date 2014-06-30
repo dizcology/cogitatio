@@ -385,7 +385,7 @@ class DOCX
         unless i==1
           row.cells.each do |cell|
             
-            if cell.content.strip!="$DESIGN"
+            if cell.content.strip!="$DESIGN" && cell.content.strip!=""
               $os_stuff[branches[j]] << [pattern[i],cell]
   
             end

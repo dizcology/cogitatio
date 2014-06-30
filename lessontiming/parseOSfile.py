@@ -31,8 +31,12 @@ def parseOSfile(osfn):
             for par in col.cells[0].paragraphs+col.cells[1].paragraphs: #temporary fix until everyone uses the new templates of script_drafter
                 if re.match(' ?[0-9][0-9][0-9]?\.',par.text):
                     itemno = par.text.split('.')[0].replace(' ','').zfill(3)
-            for path in truepaths:
-                paths[path].append(itemno.encode('ascii'))
+            for par0 in col.cells[0].paragraphs:
+              if 'skip if behind' in par0.text.lower():
+                  paths['weak + ontime'].append(itemno.encode('ascii'))
+              else:
+                  for path in truepaths:
+                      paths[path].append(itemno.encode('ascii'))
             continue
         if len(tab.columns[0].cells) > 1:
             defaultitemno = tab.columns[0].cells[1].paragraphs[0].text.split('.')[0].replace(' ','').zfill(3)
