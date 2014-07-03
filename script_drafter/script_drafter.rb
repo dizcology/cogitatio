@@ -16,7 +16,7 @@ username=ENV['USERNAME']
 
 $PATH="C:/Users/yliu/SkyDrive/RM-synced/cogitatio/script_drafter/"  #path to the files
 
-$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
+#$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
 
 
 $PATH="" unless username=="yliu"
