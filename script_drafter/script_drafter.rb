@@ -16,11 +16,11 @@ username=ENV['USERNAME']
 
 $PATH="C:/Users/yliu/SkyDrive/RM-synced/cogitatio/script_drafter/"  #path to the files
 
-#$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
+$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
 
 
 $PATH="" unless username=="yliu"
-
+current_path=Dir.pwd+"/"
 
 ext=".docx"
 os="_OS"
@@ -30,10 +30,15 @@ f_OS_template="OS_template" #empty OS template
 f_pieces="pieces"  #document pieces
 f_plan=""  #the actual lesson plan, must be in .docx format
 
-if $PATH!=""
-  Dir.chdir($PATH)
-else
+if $PATH==""
   $PATH=Dir.pwd+"/"
+  
+else
+  Dir.chdir($PATH)
+  if Dir.glob("*[0-9][0-9][0-9]*.docx")==[]
+    $PATH=current_path
+    Dir.chdir($PATH)
+  end
 end
 
 print "Lesson plan file name must have 3 digit lesson number.\n\n"

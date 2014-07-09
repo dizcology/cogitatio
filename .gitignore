@@ -219,3 +219,5 @@ lessontiming/test.vbs
 lessontiming/lessonitemstats.spec
 lessontiming/lessontiming.spec
 *.vbs
+*.zip
+*.exe
