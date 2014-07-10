@@ -116,10 +116,7 @@ class DOCX
 
         if nn.inner_html.include?($type[i]) || nn.inner_html.include?("$right.") #ugly temp fix
           
-          if i==7 && cnt.xpath(".//w:object").to_a!=[] && cnt.xpath(".//v:formulas").to_a!=[]
-            tg=" [MathType]"
-            nn.rep($type[i],cnt1.gsub(rr,"")+tg)
-          elsif i==7 && cnt.xpath(".//w:drawing").to_a==[] #screen, no drawing
+          if i==7 && cnt.xpath(".//w:drawing").to_a==[] #screen, no drawing
 
             rto=nn.at(".//w:r")
             
@@ -155,11 +152,15 @@ class DOCX
             
             if i== 5 || i== 12 #add tutor's response
               
-              begin
-                rsp = $resp[$tutor].sample
-              end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0])
+              if !($resp[$tutor].nil?)
+                begin
+                  rsp = $resp[$tutor].sample
+                end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0])
+                $resp_count[$tutor][rsp][1]+=1
+              else
+                rsp="That's right."
+              end
               
-              $resp_count[$tutor][rsp][1]+=1
               nn.rep("$right.",rsp)
             end
             

@@ -8,15 +8,16 @@ require 'Date'
 require_relative 'misc.rb'
 require_relative 'xml_nodes.rb'
 require_relative 'docx_files.rb'
+#require_relative 'dialog_boxes'  #TODO: have a distribution folder set up
 
 $PATH=""
 
 username=ENV['USERNAME']
 
 
-$PATH="C:/Users/yliu/SkyDrive/RM-synced/cogitatio/script_drafter/"  #path to the files
+#$PATH="C:/Users/yliu/SkyDrive/RM-synced/cogitatio/script_drafter/"  #path to the files
 
-$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/032/"  #path to the files
+#$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
 
 $PATH="" unless username=="yliu"
@@ -40,6 +41,8 @@ else
     Dir.chdir($PATH)
   end
 end
+
+
 
 print "Lesson plan file name must have 3 digit lesson number.\n\n"
 
