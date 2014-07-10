@@ -319,8 +319,7 @@ class DOCX
     
     end
     
-    
-    $cmt=@cmt.at(".//w:comment")
+    $cmt=@cmt.at(".//w:comment").dup
 
   end
   
@@ -369,6 +368,14 @@ class DOCX
     $chr=@doc.at(".//w:tbl").dup #copying the characters table
     
     $tutor=$chr.rows[0].cells[1].content.strip.downcase #getting tutor's name
+    
+    if !($tutors.include?($tutor))
+      rc=showmessage("Incorrect tutor name: \"#{$chr.rows[0].cells[1].content.strip}\".  Proceed? \n (All correct responses will be set to \"That's right.\")","WARNING",$WARNING)
+      if rc==7
+        puts "Exiting."
+        exit
+      end
+    end
     
     @doc.at(".//w:tbl").remove  #remove the characters table
     
