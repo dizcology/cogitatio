@@ -10,6 +10,8 @@ require_relative 'xml_nodes.rb'
 require_relative 'docx_files.rb'
 require_relative 'dialog_boxes'  #TODO: have a distribution folder set up
 
+$debug=false
+
 #$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
 $borders="<w:tblBorders><w:top w:val=\"single\" w:space=\"0\" w:color=\"auto\" w:sz=\"4\"/><w:left w:val=\"single\" w:space=\"0\" w:color=\"auto\" w:sz=\"4\"/><w:bottom w:val=\"single\" w:space=\"0\" w:color=\"auto\" w:sz=\"4\"/><w:right w:val=\"single\" w:space=\"0\" w:color=\"auto\" w:sz=\"4\"/><w:insideH w:val=\"single\" w:space=\"0\" w:color=\"auto\" w:sz=\"4\"/><w:insideV w:val=\"single\" w:space=\"0\" w:color=\"auto\" w:sz=\"4\"/></w:tblBorders>"
@@ -74,11 +76,12 @@ $RUNPATH=Dir.pwd+"/"
 $PATH=$RUNPATH
 username=ENV["USERNAME"]
 
-if username=="yliu"
+if username=="yliu" && $debug
   $RUNPATH="C:/Users/yliu/SkyDrive/RM-synced/cogitatio/script_drafter/"
   $PATH=$RUNPATH
   Dir.chdir($RUNPATH)
 end
+
 
 =begin
 =end
@@ -89,14 +92,14 @@ if !(Dir.glob("*").include?("resources"))
 end
 
 begin
-  $PATH=getfolder("Select lesson folder containing lesson plan.")
+  $PATH=getfolder("Select lesson folder containing lesson plan.").gsub("\\","/")+"/"
   
   if $PATH==""
     puts "Exiting."
     exit
   end
   
-  $PATH=$RUNPATH if username=="yliu"
+  $PATH=$RUNPATH if username=="yliu" && $debug
   Dir.chdir($PATH) 
   list=Dir.glob("*[0-9][0-9][0-9]*.docx") & Dir.glob("*plan*.docx")
   if list==[]
