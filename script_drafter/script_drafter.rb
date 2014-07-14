@@ -247,6 +247,7 @@ if $os_exists==1
     end
     
     ft=Array.new
+    $os_items.uniq!
     $os_items.each do |num|
       
       nm="000"[0..-(num.to_s.length+1)]+num.to_s

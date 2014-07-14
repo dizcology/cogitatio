@@ -221,3 +221,5 @@ lessontiming/lessontiming.spec
 *.vbs
 *.zip
 *.exe
+script_drafter/tmpin
+script_drafter/tmpout
