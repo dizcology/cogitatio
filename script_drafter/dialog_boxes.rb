@@ -97,10 +97,14 @@ end
 def getfolderpath(tle="Select folder.")
   bi=BrowseInfo.new
   bi[:lpszTitle]=FFI::MemoryPointer.from_string(tle)
-  bi[:ulFlags]=0x00000040
+  bi[:ulFlags]=0x00000010
   
   rc = GetFolder.SHBrowseForFolder(bi)
-
+  
+  if rc.null?
+    return nil
+  end
+  
   path=FFI::MemoryPointer.from_string(" "*256)
   GetPath.SHGetPathFromIDList(rc, path)
   return path.read_string

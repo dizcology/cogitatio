@@ -91,13 +91,24 @@ if !(Dir.glob("*").include?("resources"))
   exit
 end
 
-begin
-  $PATH=getfolder("Select lesson folder containing lesson plan.").gsub("\\","/")+"/"
+arg=ARGV[0].to_s  #get path from command line input
+
+begin  
+  if Dir.exists?(arg)
+    $PATH=arg
+    arg=""
+  else
+    puts arg+" does not exist." if arg!=""
+    $PATH=getfolder("Select lesson folder containing lesson plan.")
+  end
   
-  if $PATH==""
+  if $PATH=="" || $PATH.nil?
     puts "Exiting."
     exit
   end
+  
+  $PATH=$PATH.gsub("\\","/")
+  $PATH=$PATH+"/" unless $PATH.match(/[\/]$/)
   
   $PATH=$RUNPATH if username=="yliu" && $debug
   Dir.chdir($PATH) 
@@ -112,6 +123,9 @@ begin
         if rc==6
           f_plan=f.split(".")[0]
           break
+        elsif rc==7 && list.size==1
+          puts "Exiting."
+          exit
         end
       end
     end until f_plan!=""
@@ -162,7 +176,7 @@ f.each do |line|
   
 end
 
-fos=DOCX.open($PATH+"resources/"+f_OS_template+ext)
+fos=DOCX.open($RUNPATH+"resources/"+f_OS_template+ext)
 
 puts "Done."
 
