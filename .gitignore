@@ -223,3 +223,4 @@ lessontiming/lessontiming.spec
 *.exe
 script_drafter/tmpin
 script_drafter/tmpout
+report/template.docx
