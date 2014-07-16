@@ -87,6 +87,27 @@ class WIN32OLE
     pic.ScaleWidth=scale
   end
 
+  
+  def insertchart(tag, type, replace=false)
+    #list of char types: 
+    #http://msdn.microsoft.com/en-us/library/ff838409(v=office.14).aspx
+    self.Selection.HomeKey(unit=6)
+    find=self.Selection.Find
+    find.Text=tag
+    find.Execute
+    
+    if replace
+      self.Selection.TypeText(text="\n")
+      self.Selection.Move({'Unit'=>1,'Count'=>-1})
+    else
+      self.Selection.Collapse
+      self.Selection.TypeText(text="\n")
+      self.Selection.Move({'Unit'=>1,'Count'=>-1})
+    end
+    
+    cht=self.Selection.InlineShapes.AddChart({'Type'=>type})
+
+  end
 end
 
 
@@ -155,12 +176,13 @@ end
 
 word=WIN32OLE.new('Word.Application')
 word.Visible=true
+doc=word.Documents.Open($PATH+"template.docx")
+word.activate
+word.WindowState=0
 
 word.size(width=400,height=300)
-word.position(left=0,top=0)
+word.position(left=100,top=100)
 
-
-doc=word.Documents.Open($PATH+"template.docx")
 kitten="C:\\Users\\yliu\\Desktop\\kitten.jpg"
 
 
@@ -172,10 +194,32 @@ list.each do |m|
 end
 
 tag1="Table"
-
+tag2="CHART"
 pic=word.insert(tag1,img=kitten,scale=50, replace=false)
 
-doc.SaveAs($PATH+"out_ole.docx")
-word.Activate
+chrt=word.insertchart(tag2, type=51, replace=true).Chart
+chrt.ChartData.Activate
+wrksht=chrt.ChartData.Workbook.Worksheets(1)
+#puts wrksht.ole_methods
+#gets
+#puts chrt.SeriesCollection.ole_methods
+#puts chrt.SeriesCollection.count
+#puts chrt.SeriesCollection(1).ole_methods
+#gets
+#exit
 
+#puts wrkbk.Worksheets(1).UsedRange.ClearContents
+#print wrkbk.Worksheets(1).Range("B1:B2").value
+wrksht.Range("A2:A4").value=[["A"],["B"],["C"]]
+wrksht.Range("B2:B7").value=[[list[4].value],[list[3].value],[list[4].value],[list[3].value],[list[4].value],[list[3].value]]
+puts chrt.SeriesCollection.count
+chrt.SeriesCollection.NewSeries
+wrksht.Range("E1:E2").value=[["NAME"],[list[3].value]]
+puts chrt.SeriesCollection(1).name="WOOPIE!"
+
+
+exit
+doc.SaveAs($PATH+"out_ole.docx")
+#word.Activate
+#ord.WindowState=1
 exit
