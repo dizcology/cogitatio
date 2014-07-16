@@ -221,3 +221,4 @@ lessontiming/lessontiming.spec
 *.vbs
 *.zip
 *.exe
+report/template.docx
