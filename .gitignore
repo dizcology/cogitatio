@@ -224,3 +224,7 @@ lessontiming/lessontiming.spec
 script_drafter/tmpin
 script_drafter/tmpout
 report/template.docx
+script_drafter/resources - backup/OS_template.docx
+script_drafter/resources - backup/pieces.docx
+script_drafter/resources - backup/responses.csv
+script_drafter/resources - backup/template.docx

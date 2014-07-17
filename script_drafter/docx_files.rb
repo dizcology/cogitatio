@@ -86,6 +86,9 @@ class DOCX
     ary=$os_stuff[numm][1..-2]+$content[numm] #adding os stuff, then copy from lesson plan
     
 
+    prev_rsp=Array.new  #array to record previous responses to avoid
+    prev_rsp[5]=""
+    prev_rsp[12]=""
     
     ary.each do |aa|
 
@@ -153,10 +156,13 @@ class DOCX
             if i== 5 || i== 12 #add tutor's response
               
               if !($resp[$tutor].nil?)
+
                 begin
                   rsp = $resp[$tutor].sample
-                end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0])
-                $resp_count[$tutor][rsp][1]+=1
+                end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0] && !(prev_rsp.include?(rsp)))
+                $resp_count[$tutor][rsp][1]+=1  #count the times rsp is used
+                prev_rsp[i]=rsp
+
               else
                 rsp="That's right."
               end
@@ -233,7 +239,7 @@ class DOCX
     
       itm=aa[0].to_s
       cnt1=aa[1] # string
-      par=aa[2]  #number of columns in the table
+      par=aa[2]  #parameter
 
       #ncol=(par.length==0)? 1 : par.length
       ncol=par.length
@@ -491,8 +497,8 @@ class DOCX
           
           if row[0].content.include?($tag["new"]) 
             
-            if row[0].content.match(/\$new\(.{,3}\)/)
-              par=row[0].content.match(/\$new\((.{,3})\)/)[1]
+            if row[0].content.match(/\$new\([^()]{,3}\)/)
+              par=row[0].content.match(/\$new\(([^()]{,3})\)/)[1]
             else
               par=""
             end
