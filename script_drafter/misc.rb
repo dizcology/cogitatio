@@ -1,4 +1,17 @@
+def show(msg,tle,type)
+  puts msg
+  showmessage(msg,tle,type)
+end
 
+def getfolder(msg)
+  puts msg
+  getfolderpath(msg)
+end
+
+def getfile(msg)
+  puts msg
+  getfilepath(msg)
+end
 class String
   def content
     self

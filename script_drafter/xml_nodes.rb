@@ -123,4 +123,33 @@ class Nokogiri::XML::Node
     
     self.at(".//w:comments")<<qq
   end
+  
+  def merge_text_nodes
+    prev_is_text = false
+
+    newnodes = []
+    self.children.each do |element|
+      if element.text?
+        if prev_is_text
+          newnodes[-1].content += element.text
+        else
+          newnodes << element
+        end
+        element.remove
+        prev_is_text = true
+      else
+        newnodes << element.merge_text_nodes
+        element.remove
+        prev_is_text = false
+      end
+    end
+
+    self.children.remove  #this seems unnecessary
+    newnodes.each do |item|
+      self.add_child(item)
+    end
+
+    return self
+  end
+  
 end
