@@ -54,6 +54,10 @@ def getStats(text,style):
     longcount = 0
     nonstandardsubmittime = 0
     longsubmittime = 0
+    
+    #debug here:
+    #print(text)
+    #raw_input()
 
     if 'submit' in text.lower():
         if re.search('[0-9]+:[0-9][0-9]',text):
