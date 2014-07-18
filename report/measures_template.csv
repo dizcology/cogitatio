@@ -1,0 +1,46 @@
+MID,tag,value,Type,alias,description
+pA,$pA,,system,%A,Percent A (%)
+pB,$pB,,system,%B,Percent B (%)
+pC,$pC,,system,%C,Percent C (%)
+TO,$TO,,system,Hours Online,Time online (hours)
+obj,$obj,,system,,Objectives studied
+OM,$OM,,system,Objectives Met,Objectives met
+year,$year,,factual,,School year
+dname,$dname,,factual,,District name
+sname,$sname,,factual,,School name
+pTO,$pTO,,aggregated,,Percentage of schedule time online over recommended time (%)
+rTOMOh,$rTOMOh,,aggregated,,Ratio of time online to met objective hours
+TOO,$TOO,,system,,Time online outside (hours)
+pobj,$pobj,,aggregated,,Percentage of objectives studied among all objectives (%)
+pOM,$pOM,,aggregated,,Percentage of objectives met among all objectives (%)
+p75A,$p75A,,aggregated,,Percentage of students achieving pA>=75
+p45B,$p45B,,aggregated,,Percentage of students achieving pB>=45
+p30C,$p30C,,aggregated,,Percentage of students achieving pC>=30
+TOmay_mean,$TOmay_mean,,aggregated,,Time online prior to May 1; mean
+TOmay_sd,$TOmay_sd,,aggregated,,Time online prior to May 1; standard deviation
+TOmay_min,$TOmay_min,,aggregated,,Time online prior to May 1; minimum
+TOmay_max,$TOmay_max,,aggregated,,Time online prior to May 1; maximum
+objmay_mean,$objmay_mean,,aggregated,,Objectives studied prior to May 1; mean
+objmay_sd,$objmay_sd,,aggregated,,Objectives studied prior to May 1; standard deviation
+objmay_min,$objmay_min,,aggregated,,Objectives studied prior to May 1; minimum
+objmay_max,$objmay_max,,aggregated,,Objectives studied prior to May 1; maximum
+pA_mean,$pA_mean,,aggregated,,Percent A; mean
+pA_sd,$pA_sd,,aggregated,,Percent A; standard deviation
+pA_min,$pA_min,,aggregated,,Percent A; minimum
+pA_max,$pA_max,,aggregated,,Percent A; maximum
+pB_mean,$pB_mean,,aggregated,,Percent B; mean
+pB_sd,$pB_sd,,aggregated,,Percent B; standard deviation
+pB_min,$pB_min,,aggregated,,Percent B; minimum
+pB_max,$pB_max,,aggregated,,Percent B; maximum
+pC_mean,$pC_mean,,aggregated,,Percent C; mean
+pC_sd,$pC_sd,,aggregated,,Percent C; standard deviation
+pC_min,$pC_min,,aggregated,,Percent C; minimum
+pC_max,$pC_max,,aggregated,,Percent C; maximum
+support,$support,,factual,,Implementation support type
+obssc_mean,$obssc_mean,,aggregated,,Average observation score
+obssc_pch,$obssc_pch,,aggregated,,Percent change in observation score since previous observation
+test,$test,,district,,Standardized test score
+test_mean,$test_mean,,aggregated,,Standardized test score; mean
+test_sd,$test_sd,,aggregated,,Standardized test score; standard deviation
+test_min,$test_min,,aggregated,,Standardized test score; minimum
+test_max,$test_max,,aggregated,,Standardized test score; max

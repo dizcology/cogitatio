@@ -19,8 +19,9 @@ class String
   
   def req #method to generate the correct R code strings
     r=""
-    abc=self.match(/([ABC])/)[1]
-    
+    if self.match(/[ABC]/)
+      abc=self.match(/([ABC])/)[1]
+    end
     
     if self.include?("_")
       a, f = self.split("_")
@@ -32,6 +33,9 @@ class String
     elsif self.match(/^p\d{2}[ABC]$/)
       n=self.match(/^p(\d{2})[ABC]$/)[1]
       r="#{self} <- percent(p#{abc},#{n})"
+    
+    else
+      r=nil
     end
       
     return r
@@ -120,23 +124,42 @@ end
 class Measure
   def initialize(str)
     @mid=str
-    @tag="$#{@mid}"
-    self.req_string
+    @value=nil
+    #@tag="$#{@mid}"  #get this from measures_template.csv
+    self.get_req_string
   end
   
-  def req_string
+  def get_req_string
     @req=@mid.req
   end
   
   def get_value
-    R.eval(@req)  #returns true if successful
-    @value=R.pull(@mid)  #Kernel.eval("R.#{@mid}")  
+  
+    if !(@value.nil?)
+      #do nothing if there is already a value
+    elsif @mid.match("_")
+      anc=@mid.split("_")[0]
+      ancestor=$measures.select{|a| a.mid==anc}[0]
+      if ancestor.nil? || ancestor.req.nil?
+        @value=nil
+      else
+        R.eval(@req)  #returns true if successful
+        @value=R.pull("as.numeric(#{@mid})")  #Kernel.eval("R.#{@mid}") 
+      end
+    elsif @req.nil?
+      @value=nil
+    else
+      R.eval(@req)  #returns true if successful
+      @value=R.pull("as.numeric(#{@mid})")  #Kernel.eval("R.#{@mid}") 
+    end
+    
   end
   
-  attr_accessor :mid, :tag, :value, :description, :req, :type
+  attr_accessor :mid, :tag, :value, :description, :req, :type, :alias
 
 end
 
+$RUNPATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\"
 $PATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\"
 Dir.chdir($PATH)
 
@@ -157,8 +180,42 @@ R.eval(preamble)
 
 
 metric=File.open(metric_path,"r")
-#metric.readline #row with years
 
+$measures = Array.new
+
+def $measures.dump(pth)
+  begin
+    f=File.open(pth,"w")
+  rescue
+    print "Can't create file: "+pth
+    exit
+  end
+  
+  self.each do |m|
+    val=(m.value.class==Array)? "*":m.value  #arrays are not printed
+    f.print [m.mid,m.tag,val,m.type,m.alias,m.description].join(",")+"\n"
+  
+  end
+end
+
+mf=File.open($RUNPATH+"measures_template.csv")
+
+mf.each do |line|
+  #object with mid="MID" records the header row of measures.csv
+  mid, tag, value, type, als, description = line.strip.split(",")
+  newm = Measure.new(mid)
+  newm.tag=tag
+  newm.value= (value=="")? nil : value
+  newm.type=type
+  newm.alias=als
+  newm.description=description
+  
+  newm.get_value
+  
+  $measures << newm
+end
+
+=begin
 desc_stats=["mean","sd","min","max"]
 system=["pA","pB","pC"]
 aggregated=["p75A", "p45B", "p30C"]
@@ -173,25 +230,31 @@ list=Array.new
   list << Measure.new(m)
   list[-1].get_value
 end
+=end
+
 
 word=WIN32OLE.new('Word.Application')
 word.Visible=true
-doc=word.Documents.Open($PATH+"template.docx")
+doc=word.Documents.Open($RUNPATH+"template.docx")
 word.activate
 word.WindowState=0
 
 word.size(width=400,height=300)
 word.position(left=100,top=100)
 
-kitten="C:\\Users\\yliu\\Desktop\\kitten.jpg"
-
-
-list.each do |m|
-  next if m.mid.in?(system)
+$measures.each do |m|
+  next if m.type=="system" || m.value.nil? || m.type=="Type"
   
   word.gsub(m.tag,m.value.round(1).to_s)
-
+  
 end
+
+doc.SaveAs($PATH+"out.docx")
+$measures.dump($PATH+"measures_out.csv")
+
+exit
+###################################################
+###################################################
 
 tag1="Table"
 tag2="CHART"
