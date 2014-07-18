@@ -56,7 +56,7 @@ class WIN32OLE
   end
 
 
-  def gsub(old,new)  #define in WIN32OLE class
+  def gsub(old,new)  
     self.Selection.HomeKey(unit=6)
     find=self.Selection.Find
     find.Text=old
@@ -67,6 +67,20 @@ class WIN32OLE
     end
     return count
   end
+  
+  def xgsub(old,new)  #not really "g"sub, just sub for now
+    rng=self.UsedRange.Find(old)
+    count=0
+    if !(rng.nil?)
+      begin
+        rng.value=[[new]]
+        count+=1
+        rng=rng.FindNext
+      end until rng.nil?
+    end
+    return count
+  end
+  
 
   def insert(tag,img=kitten, scale=100, replace=false)
     self.Selection.HomeKey(unit=6)
@@ -235,18 +249,34 @@ end
 
 word=WIN32OLE.new('Word.Application')
 word.Visible=true
-doc=word.Documents.Open($RUNPATH+"template.docx")
 word.activate
 word.WindowState=0
-
 word.size(width=400,height=300)
 word.position(left=100,top=100)
 
+doc=word.Documents.Open($RUNPATH+"template.docx")
+
+#print doc.InlineShapes.count
+
+
 $measures.each do |m|
   next if m.type=="system" || m.value.nil? || m.type=="Type"
-  
   word.gsub(m.tag,m.value.round(1).to_s)
-  
+end
+
+shapes_count=doc.InlineShapes.count
+
+(1..shapes_count).each do |i|
+    cd=doc.InlineShapes(i).Chart.ChartData
+    cd.activate
+    wrksht=cd.Workbook.Worksheets(1)
+    
+    $measures.each do |m|
+      next if m.type=="system" || m.value.nil? || m.type=="Type"
+      wrksht.xgsub(m.tag,m.value.round(1).to_s)
+    end
+    
+    cd.Workbook.Close
 end
 
 doc.SaveAs($PATH+"out.docx")
