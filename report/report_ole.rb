@@ -68,14 +68,14 @@ class WIN32OLE
     return count
   end
   
-  def xgsub(old,new)  #not really "g"sub, just sub for now
+  def xgsub(old,new)  
     rng=self.UsedRange.Find(old)
     count=0
     if !(rng.nil?)
       begin
         rng.value=[[new]]
         count+=1
-        rng=rng.FindNext
+        rng=self.UsedRange.FindNext(rng)
       end until rng.nil?
     end
     return count
