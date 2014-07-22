@@ -11,6 +11,10 @@ from lessonitemstats import getlessonitemstats
 from subprocess import Popen
 import datetime
 
+runpath=os.getcwd()+"\\"
+header="lesson,KE,ontime,behind\n"
+newtime={}
+
 Tk().withdraw()
 if len(sys.argv) > 1:
     filename = sys.argv[1]
@@ -23,7 +27,8 @@ if not filename[-4:] == 'docx':
     except Exception as e:
         print >> sys.stderr, 'OS file must be of type *.docx' 
         exit(3)
-lesson = re.findall('[0-9][0-9][0-9]',filename)[-1]
+lesson = re.findall('[0-9][0-9][0-9]',filename)[-1].encode('ascii')
+
 filepath = '/'.join(filename.split('/')[:-1]) + '/'
 
 paths = parseOSfile(filename)
@@ -130,7 +135,44 @@ with open(csvfilename,'w') as csvfile:
     for path in ['weak + behind','weak + ontime']:
         pathstats = [itemstats[i] for i in (paths[path] + branchpath)]
         print path.ljust(15) + timeFormat(predLength(lessonStats(pathstats),lessoncoefficients)).rjust(10)
+        newtime[path[7:]]=timeFormat(predLength(lessonStats(pathstats),lessoncoefficients))
         csvfile.write(path + ',' + timeFormat(predLength(lessonStats(pathstats),lessoncoefficients)) + ',')
         csvfile.write('->'.join(sorted(paths[path]+branchpath)) + '\n')
 
+if os.path.isfile(runpath+"lesson_times.csv"):
+        
+  ftimes=open(runpath+"lesson_times.csv","r")
+  oldtimes=ftimes.readlines()
+  ftimes.close
+
+  oldtimes.pop(0) #remove header row
+  times={}
+  for line in oldtimes:
+    if len(line.strip().split(","))==4:
+      [lsn,ke,ontm,behnd] = line.strip().split(",")
+      times[lsn]={"KE":ke, "ontime":ontm, "behind":behnd}
+
+  times[lesson]={}
+  times[lesson]={"KE":"??", "ontime":newtime["ontime"], "behind":newtime["behind"]} #need to pull KE's name from somewhere
+  
+  sorted_keys=sorted(times.keys())
+
+  ftimes=open(runpath+"lesson_times.csv","w")
+  ftimes.write(header)
+  
+  for k in sorted_keys:
+    str = ",".join([k, times[k]["KE"], times[k]["ontime"], times[k]["behind"]])
+    str = str + "\n"
+    
+    ftimes.write(str)
+  
+  ftimes.write("Last updated:"+datetime.datetime.now().strftime("%m/%d/%Y_%H:%M")+" (lesson "+lesson+")")
+
+  ftimes.close
+  
+
+       
 Popen(csvfilename, shell=True)
+
+
+
