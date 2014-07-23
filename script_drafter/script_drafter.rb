@@ -269,7 +269,7 @@ if $os_exists==1
       
       nm="000"[0..-(num.to_s.length+1)]+num.to_s
 
-      ft[num]=DOCX.open($PATH+"resources/"+f_template+ext)
+      ft[num]=DOCX.open($RUNPATH+"resources/"+f_template+ext)
       ft[num].add(num)
       ft[num].save($draft_path+$lesson+"-"+nm+ext)
       puts "script file "+$lesson+"-"+nm+ext+" generated."
