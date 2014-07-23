@@ -437,10 +437,12 @@ class DOCX
   
   def extract_cells1
     
-    @cmt.xpath(".//w:comment").each do |cr|
-    
-      $comments[cr["w:id"].to_s.strip]=cr.content.strip
+    if !(@cmt.nil?)
+      @cmt.xpath(".//w:comment").each do |cr|
+      
+        $comments[cr["w:id"].to_s.strip]=cr.content.strip
 
+      end
     end
     
     temp=Array.new
