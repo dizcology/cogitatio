@@ -1,23 +1,29 @@
 
 class Nokogiri::XML::Node
 
+# Finds and removes the pieces of text that are struck out from the XML tree
   def strike!
   
-    self.xpath(".//w:strike").each do |s|
+    # Finds all 'w:strike' tags in the XML tree that are descendants of this node
+	self.xpath(".//w:strike").each do |s|
 
-      s.parent.parent.remove
+      # removes the text node containing the 'w:strike' tags
+	  s.parent.parent.remove
 
     end
 
-    return self
+    # returns the cleaned up XML tree
+	return self
   
   end
   
-  
+  # replaces 'original' with 'new' in the html representation of the XML tree
   def rep(original, new)
-    original=(original==nil)? "":original
+    # making sure we don't try substituting nil objects or for nil objects
+	original=(original==nil)? "":original
     new=(new==nil)? "":new
-    temp=self.inner_html
+    
+	temp=self.inner_html
     self.inner_html=temp.gsub(original, new)
     self
   end
