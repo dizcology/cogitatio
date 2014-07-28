@@ -56,7 +56,7 @@ def getStats(text,style):
     longsubmittime = 0
 
     if 'submit' in text.lower():
-        if re.search('[0-9]+:[0-9][0-9]',text):
+        if re.search('[0-9]+:[0-9][0-9]',text):   #REGEX WHERE MINUTES CAN HAVE AS MANY DIGITS // SECONDS HAVE ONLY 2 DIGITS
             time = re.search('[0-9]+:[0-9][0-9]',text).group(0)
             time = time.split(':')
             stime = int(time[0])*60+int(time[1])

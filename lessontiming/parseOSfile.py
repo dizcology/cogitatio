@@ -41,7 +41,7 @@ def parseOSfile(osfn):
         if len(tab.columns[0].cells) > 1:
             defaultitemno = tab.columns[0].cells[1].paragraphs[0].text.split('.')[0].replace(' ','').zfill(3)
             # defaultitemno is the fallback if the OS describes the branch as 'same as...'.
-            for col in tab.columns:
+            for col in tab.columns:    #------------GOES THROUGH COLUMNS OF THE TABLE
                 try:
                     branchpaths.append([])
                     colheader = col.cells[0].paragraphs[0].text
@@ -52,7 +52,7 @@ def parseOSfile(osfn):
                         #   itemno = defaultitemno                  # but potentially causes problems.
                         else: itemno = ''
                         if not itemno == '':
-                            if 'weak' in colheader.lower():
+                            if 'weak' in colheader.lower():         #--------INTERESTED ONLY IN THE WEAK BRANCH FOR TIMING
                                 if not ('skip if behind' in colheader.lower() or 'not behind' in colheader.lower()):
                                     paths['weak + behind'].append(itemno.encode('ascii'))
                                 if not colheader.lower() == 'behind':
