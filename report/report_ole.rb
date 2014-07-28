@@ -73,7 +73,7 @@ class Application < WIN32OLE
     end
   end
   
-  attr_accessor :type
+  attr_reader :type
 end
 
 class WIN32OLE
@@ -147,6 +147,7 @@ class WIN32OLE
 
   
   def insertchart(tag, type, replace=false)
+  
     #list of char types: 
     #http://msdn.microsoft.com/en-us/library/ff838409(v=office.14).aspx
     self.Selection.HomeKey(unit=6)
@@ -166,6 +167,61 @@ class WIN32OLE
     cht=self.Selection.InlineShapes.AddChart({'Type'=>type})
 
   end
+  
+  def pop_text(type)  #method for document or presentation objects
+    if type=="pptx"
+      $measures.each do |m|
+        next if m.type=="system" || m.value.nil? || m.type=="Type"
+        self.each :Slides do |s|
+          s.each :Shapes do |sh|
+            if sh.TextFrame.HasText==-1
+              txt=sh.TextFrame.TextRange.Text.gsub(m.tag,m.value.round(1).to_s)
+              sh.TextFrame.TextRange.Text=txt
+            end
+          end
+        end
+      end
+    elsif type=="docx"         
+      $measures.each do |m|
+        next if m.type=="system" || m.value.nil? || m.type=="Type"
+        self.Application.gsub(m.tag,m.value.round(1).to_s)
+      end
+    end
+  end
+  
+  def pop_shape(type) #method for document or presentation objects
+    if type=="pptx"
+      self.each :slides do |s|
+        s.each :Shapes do |sh|
+          if sh.HasChart==-1
+            sh.pop_chart
+          end
+        end
+      end
+    elsif type=="docx"
+      self.each :InlineShapes do |sh|
+        sh.pop_chart
+      end
+    end
+  end
+  
+  
+  def pop_chart #method for shape objects
+    cd=self.Chart.ChartData
+    cd.activate
+    wrksht=cd.Workbook.Worksheets(1)
+    
+    $measures.each do |m|
+      next if m.type=="system" || m.value.nil? || m.type=="Type"
+      wrksht.xgsub(m.tag,m.value.round(1).to_s)
+    end
+
+    cd.Workbook.Close({'SaveChanges'=>'True'})
+    
+    sleep 0.5 #temporary solution, want asynchronosity
+    
+  end
+  
 end
 
 
@@ -213,6 +269,23 @@ class Measure
 
 end
 
+$measures = Array.new
+
+def $measures.dump(pth)
+  begin
+    f=File.open(pth,"w")
+  rescue
+    print "Can't create file: "+pth
+    exit
+  end
+  
+  self.each do |m|
+    val=(m.value.class==Array)? "*":m.value  #arrays are not printed
+    f.print [m.mid,m.tag,val,m.type,m.alias,m.description].join(",")+"\n"
+  
+  end
+end
+
 $RUNPATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\"
 $PATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\"
 Dir.chdir($PATH)
@@ -221,6 +294,11 @@ Dir.chdir($PATH)
 tle1="Open metric report file."
 puts tle1
 metric_path=getfilepath(tle1)
+
+#this depends on the shape of the APEX output
+#TODO: use school/district name instead
+metric_name=metric_path.split("\\")[-1].split(".")[0]
+
 metric_path_R="\""+metric_path.gsub("\\","/")+"\""
 
 exit if metric_path==""
@@ -244,23 +322,6 @@ R.eval(preamble)
 
 metric=File.open(metric_path,"r")
 
-$measures = Array.new
-
-def $measures.dump(pth)
-  begin
-    f=File.open(pth,"w")
-  rescue
-    print "Can't create file: "+pth
-    exit
-  end
-  
-  self.each do |m|
-    val=(m.value.class==Array)? "*":m.value  #arrays are not printed
-    f.print [m.mid,m.tag,val,m.type,m.alias,m.description].join(",")+"\n"
-  
-  end
-end
-
 mf=File.open($RUNPATH+"measures_template.csv")
 
 mf.each do |line|
@@ -268,7 +329,7 @@ mf.each do |line|
   mid, tag, value, type, als, description = line.strip.split(",")
   newm = Measure.new(mid)
   newm.tag=tag
-  newm.value= (value=="")? nil : value
+  newm.value= (value.strip=="")? nil : value
   newm.type=type
   newm.alias=als
   newm.description=description
@@ -282,62 +343,11 @@ end
 app=Application.new(template_type)
 temp=app.open(template_path)
 
-$measures.each do |m|
-  next if m.type=="system" || m.value.nil? || m.type=="Type"
-  
-  #print temp.Slides.send(:Count)
-  temp.each :Slides do |s|
-    s.each :Shapes do |sh|
-      if sh.TextFrame.HasText==-1
-        txt=sh.TextFrame.TextRange.Text.gsub(m.tag,m.value.round(1).to_s)
-        sh.TextFrame.TextRange.Text=txt
-      end
-    end
-  end
-end
+temp.pop_text(template_type)
+temp.pop_shape(template_type)
 
-temp.each :slides do |s|
-  s.each :Shapes do |sh|
+temp.SaveAs($PATH+metric_name+"."+template_type)
+$measures.dump($PATH+metric_name+"_measures.csv")
 
-    if sh.HasChart==-1
-      cd=sh.Chart.ChartData
-      cd.activate
-      wrksht=cd.Workbook.Worksheets(1)
-      
-      $measures.each do |m|
-        next if m.type=="system" || m.value.nil? || m.type=="Type"
-        wrksht.xgsub(m.tag,m.value.round(1).to_s)
-      end
-      
-      cd.Workbook.Close
-    end
-  end
-end
-
-exit
-
-$measures.each do |m|
-  next if m.type=="system" || m.value.nil? || m.type=="Type"
-  app.gsub(m.tag,m.value.round(1).to_s)
-end
-
-exit
-
-shapes_count=doc.InlineShapes.count
-
-(1..shapes_count).each do |i|
-    cd=doc.InlineShapes(i).Chart.ChartData
-    cd.activate
-    wrksht=cd.Workbook.Worksheets(1)
-    
-    $measures.each do |m|
-      next if m.type=="system" || m.value.nil? || m.type=="Type"
-      wrksht.xgsub(m.tag,m.value.round(1).to_s)
-    end
-    
-    cd.Workbook.Close
-end
-
-doc.SaveAs($PATH+"out.docx")
-$measures.dump($PATH+"measures_out.csv")
+temp.Application.size(1000,1000)
 
