@@ -222,16 +222,23 @@ lessontiming/lessontiming.spec
 *.zip
 *.exe
 <<<<<<< HEAD
+<<<<<<< HEAD
 report/template.docx
 =======
 script_drafter/tmpin
 script_drafter/tmpout
+=======
+>>>>>>> origin/report
 report/template.docx
 script_drafter/resources - backup/OS_template.docx
 script_drafter/resources - backup/pieces.docx
 script_drafter/resources - backup/responses.csv
 script_drafter/resources - backup/template.docx
+<<<<<<< HEAD
 >>>>>>> origin/drafter-UI
 report/Data Presentation Template.pptx
 script_drafter/062_OS.docx
 script_drafter/062_plan_shortened_comments.docx
+=======
+*.pptx
+>>>>>>> origin/report
