@@ -12,10 +12,11 @@ def parseOSfile(osfn):
 
     truepaths = ['weak + behind','weak + ontime']
 
+    itemno_pat='\s*[0-9][0-9][0-9]\s*\.'  #used to be ' ?[0-9][0-9][0-9]?\.' which makes little sense
     for par in osfile.paragraphs:   
     # First, go through the paragraphs and pull out any numbers starting lines.
-        if re.match(' ?[0-9][0-9][0-9]?\.',par.text):
-            itemno = par.text.split('.')[0].replace(' ','').zfill(3)
+        if re.match(itemno_pat,par.text):
+            itemno = par.text.split('.')[0].replace(' ','').zfill(3)  #why not just capture the the three digit numbers?
             if 'skip if behind' in par.text.lower():
                 paths['weak + ontime'].append(itemno.encode('ascii'))
             else:
@@ -29,7 +30,7 @@ def parseOSfile(osfn):
         if  len(tab.columns)==1:
             col=tab.columns[0]
             for par in col.cells[0].paragraphs+col.cells[1].paragraphs: #temporary fix until everyone uses the new templates of script_drafter
-                if re.match(' ?[0-9][0-9][0-9]?\.',par.text):
+                if re.match(itemno_pat,par.text):
                     itemno = par.text.split('.')[0].replace(' ','').zfill(3)
             for par0 in col.cells[0].paragraphs:
               if 'skip if behind' in par0.text.lower():
@@ -46,7 +47,7 @@ def parseOSfile(osfn):
                     branchpaths.append([])
                     colheader = col.cells[0].paragraphs[0].text
                     for par in col.cells[1].paragraphs:
-                        if re.match(' ?[0-9][0-9][0-9]?\.',par.text):
+                        if re.match(itemno_pat,par.text):
                             itemno = par.text.split('.')[0].replace(' ','').zfill(3)
                         #elif re.match('^same',par.text.lower()):   # Removing this because it's not used in the weak
                         #   itemno = defaultitemno                  # but potentially causes problems.
@@ -74,5 +75,9 @@ def parseOSfile(osfn):
                 paths['branches'].append(branchpaths)
 
     for path in truepaths: 
-        paths[path] = sorted(list(set(paths[path])))        # Remove duplicates and sort
+        #paths[path] = sorted(list(set(paths[path])))        # Remove duplicates and sort... but why should there be duplicates?
+        while "" in paths[path]:
+          paths[path].remove("")
+        
+        paths[path] = sorted(list(set(paths[path])))
     return paths

@@ -395,7 +395,7 @@ class DOCX
 
       nrow=rows.size
       
-      rows[nrow-4].xpath(".//w:tc").each do |cell|
+      (rows[1].xpath(".//w:tc").to_a+rows[0].xpath(".//w:tc").to_a).each do |cell|
       
         if cell.content.strip.match(/^\d{3}/)
           lin=cell.content.strip.match(/^(\d{3})/)[1].to_i
@@ -406,6 +406,8 @@ class DOCX
 
         end
       end
+      
+      next if branches==[]  #danger!
 
       i=5-nrow  #bad, expected row index to copy os stuff from
       if i==1
