@@ -52,7 +52,7 @@ class Application < WIN32OLE
       call_str='PowerPoint.Application'
       @state=1
     else
-      print "Unknown template type: "+@type
+      print "Unknown template type: #{@type}"
       exit
     end
     super(call_str)
@@ -92,7 +92,7 @@ class WIN32OLE
   def each symb, &block
     count = self.send(symb).Count
     (1..count).each do |i|
-      yield self.send(symb).Item({'index'=>i})
+      yield self.send(symb).Item({'index'=>i}) if block_given?
     end
   end
   
@@ -170,21 +170,17 @@ class WIN32OLE
   
   def pop_text(type)  #method for document or presentation objects
     if type=="pptx"
-      $measures.each do |m|
-        next if m.type=="system" || m.value.nil? || m.type=="Type"
-        self.each :Slides do |s|
-          s.each :Shapes do |sh|
-            if sh.TextFrame.HasText==-1
-              txt=sh.TextFrame.TextRange.Text.gsub(m.tag,m.value.round(1).to_s)
-              sh.TextFrame.TextRange.Text=txt
-            end
-          end
+      self.each :Slides do |s|
+        s.each :Shapes do |sh|
+          next unless sh.HasTextFrame==-1
+          sh.pop_tf if sh.TextFrame.HasText==-1
         end
       end
+      
     elsif type=="docx"         
       $measures.each do |m|
         next if m.type=="system" || m.value.nil? || m.type=="Type"
-        self.Application.gsub(m.tag,m.value.round(1).to_s)
+        self.Application.gsub(m.tag,m.value.round(2).to_s)
       end
     end
   end
@@ -193,9 +189,10 @@ class WIN32OLE
     if type=="pptx"
       self.each :slides do |s|
         s.each :Shapes do |sh|
-          if sh.HasChart==-1
-            sh.pop_chart
-          end
+            sh.pop_chart if sh.HasChart==-1
+            sh.pop_table if sh.HasTable==-1
+            #sh.pop_tf if sh.TextFrame.HasText==-1
+
         end
       end
     elsif type=="docx"
@@ -205,6 +202,27 @@ class WIN32OLE
     end
   end
   
+  def pop_tf  #method for shape objects
+    $measures.each do |m|
+      next if m.type=="system" || m.value.nil? || m.type=="Type"
+      txt=self.TextFrame.TextRange.Text.gsub(m.tag,m.value.round(2).to_s)
+      self.TextFrame.TextRange.Text=txt
+    end
+  end
+  
+  def pop_table #method for shape objects
+    tbl=self.Table
+    tbl.each :Rows do |r|
+      r.each :Cells do |c|
+        next if c.Shape.TextFrame.HasText!=-1
+        $measures.each do |m|
+          next if m.type=="system" || m.value.nil? || m.type=="Type"
+          txt=c.Shape.TextFrame.TextRange.Text.gsub(m.tag,m.value.round(2).to_s)
+          c.Shape.TextFrame.TextRange.Text=txt
+        end
+      end
+    end
+  end
   
   def pop_chart #method for shape objects
     cd=self.Chart.ChartData
@@ -213,12 +231,25 @@ class WIN32OLE
     
     $measures.each do |m|
       next if m.type=="system" || m.value.nil? || m.type=="Type"
-      wrksht.xgsub(m.tag,m.value.round(1).to_s)
+      wrksht.xgsub(m.tag,m.value.round(2).to_s)
+      
+      txt=self.Chart.ChartTitle.Text.gsub(m.tag,m.value.round(2).to_s)
+      self.Chart.ChartTitle.Text=txt
+      
+      txt=self.Chart.Axes({'Type'=>2}).AxisTitle.Text.gsub(m.tag,m.value.round(2).to_s)
+      self.Chart.Axes({'Type'=>2}).AxisTitle.Text=txt
+      
+      #HERE
+      #self.Chart.each :Axes do |a|
+      #  sh.Chart.Axes({'Type'=>2}).AxisTitle.Text
+      #  txt1=a.Axistitle.Caption.gsub(m.tag,m.value.round(2).to_s)
+      #  a.Axistitle.Caption=txt1
+      #end
     end
 
     cd.Workbook.Close({'SaveChanges'=>'True'})
     
-    sleep 0.5 #temporary solution, want asynchronosity
+    sleep 0.3 #temporary solution, want asynchronosity
     
   end
   
@@ -286,29 +317,36 @@ def $measures.dump(pth)
   end
 end
 
-$RUNPATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\"
-$PATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\"
-Dir.chdir($PATH)
+testing=true
 
+if testing==true
 
-tle1="Open metric report file."
-puts tle1
-metric_path=getfilepath(tle1)
+  $RUNPATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\"
+  $PATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\"
+  Dir.chdir($PATH)
+  metric_path="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\Metrics_Report-Curtis ES-05_AUG_2012-27_JUL_2013.csv"
+  template_path="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\2013-2014 Data Reporting Template - Copy.pptx"
+else
 
-#this depends on the shape of the APEX output
-#TODO: use school/district name instead
-metric_name=metric_path.split("\\")[-1].split(".")[0]
+  tle1="Open metric report file."
+  puts tle1
+  metric_path=getfilepath(tle1)
+
+  #this depends on the shape of the APEX output
+  #TODO: use school/district name instead
+  
+  exit if metric_path==""
+
+  tle2="Open template file."
+  puts tle2
+  template_path=getfilepath(tle2)
+  exit if template_path==""
+
+end
 
 metric_path_R="\""+metric_path.gsub("\\","/")+"\""
-
-exit if metric_path==""
-
-tle2="Open template file."
-puts tle2
-template_path=getfilepath(tle2)
+metric_name=metric_path.split("\\")[-1].split(".")[0]
 template_type=template_path.split(".")[-1]
-
-exit if template_path==""
 
 source_R="\"C:/Users/yliu/SkyDrive/RM-synced/cogitatio/report/agg.r\""
 preamble = <<EOF
@@ -325,7 +363,7 @@ metric=File.open(metric_path,"r")
 mf=File.open($RUNPATH+"measures_template.csv")
 
 mf.each do |line|
-  #object with mid="MID" records the header row of measures.csv
+  #the Measure object with mid="MID" records the header row of measures.csv
   mid, tag, value, type, als, description = line.strip.split(",")
   newm = Measure.new(mid)
   newm.tag=tag
@@ -339,12 +377,36 @@ mf.each do |line|
   $measures << newm
 end
 
-
 app=Application.new(template_type)
 temp=app.open(template_path)
 
+=begin
+temp.each :Slides do |s|
+  s.each :Shapes do |sh|
+    if sh.HasChart==-1
+      #puts sh.Chart.Name
+      
+      #puts sh.Chart.Axes.Count
+      
+      puts sh.Chart.Axes({'Type'=>2}).AxisTitle.Text #if sh.Chart.Axes({'Type'=>2}).HasTitle==-1
+      
+      #sh.Chart.each :Axes do |a|
+      #  print a#.AxisTitle.Caption if a.HasTitle==-1
+      #end
+      #gets
+    end
+    
+  end
+end
+
+exit
+=end
+
+
 temp.pop_text(template_type)
 temp.pop_shape(template_type)
+
+exit
 
 temp.SaveAs($PATH+metric_name+"."+template_type)
 $measures.dump($PATH+metric_name+"_measures.csv")
