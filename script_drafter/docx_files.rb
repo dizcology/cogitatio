@@ -562,14 +562,7 @@ class DOCX
           end
           
 
-          if row[0].content.include?($tag["screen"])
           
-            row[0].xpath(".//w:commentReference").each do |cr|
-              target << [19, $comments[cr.attribute("id").to_s.strip]]
-            end
-          
-            target << [7,row[0]]
-          end
           
           unless row[1].content.include?($tag["cut"]) || row[1].strike!.content.strip==""
           
@@ -587,6 +580,15 @@ class DOCX
             
  
             $word_count[$item]+=row[1].content.split(" ").size
+          end
+          
+          if row[0].content.include?($tag["screen"])
+          
+            row[0].xpath(".//w:commentReference").each do |cr|
+              target << [19, $comments[cr.attribute("id").to_s.strip]]
+            end
+          
+            target << [7,row[0]]
           end
           
           unless row[2].content.include?($tag["cut"]) || row[2].strike!.content.strip=="" || row[1].content.include?($tag["cut"]) || row[1].strike!.content.strip==""
