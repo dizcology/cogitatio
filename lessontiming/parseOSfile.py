@@ -1,6 +1,15 @@
 from docx import *
 import re
 
+def getItemNum(string):
+    itemno_pat=r'^\d{2,3}'
+    res=re.findall(itemno_pat,string)
+    if res:
+        return res[0].zfill(3)
+    else:
+        return None
+  
+
 def parseOSfile(osfn):
     '''Parse the given OS file, extracting the paths of interest.'''
     osfile = Document(osfn)
@@ -12,12 +21,16 @@ def parseOSfile(osfn):
 
     truepaths = ['weak + behind','weak + ontime']
 
-    itemno_pat='\s*[0-9][0-9][0-9]\s*\.'  #used to be ' ?[0-9][0-9][0-9]?\.' which makes little sense
+    #itemno_pat='\s*[0-9][0-9][0-9]\s*\.?'  #used to be ' ?[0-9][0-9][0-9]?\.' which makes little sense
+
     for par in osfile.paragraphs:   
     # First, go through the paragraphs and pull out any numbers starting lines.
-        if re.match(itemno_pat,par.text):
-            itemno = par.text.split('.')[0].replace(' ','').zfill(3)  #why not just capture the the three digit numbers?
-            if 'skip if behind' in par.text.lower():
+        tempnum=getItemNum(par.text)
+        if tempnum:
+            itemno = tempnum
+            if 'quiz' in par.text.lower():
+                pass
+            elif 'skip if behind' in par.text.lower():
                 paths['weak + ontime'].append(itemno.encode('ascii'))
             else:
                 for path in truepaths:
@@ -30,10 +43,13 @@ def parseOSfile(osfn):
         if  len(tab.columns)==1:
             col=tab.columns[0]
             for par in col.cells[0].paragraphs+col.cells[1].paragraphs: #temporary fix until everyone uses the new templates of script_drafter
-                if re.match(itemno_pat,par.text):
-                    itemno = par.text.split('.')[0].replace(' ','').zfill(3)
-            for par0 in col.cells[0].paragraphs:
-              if 'skip if behind' in par0.text.lower():
+                tempnum = getItemNum(par.text)
+                if tempnum:
+                    itemno = tempnum
+            for par in col.cells[0].paragraphs:
+              if 'quiz' in par.text.lower():
+                  pass
+              elif 'skip if behind' in par.text.lower():
                   paths['weak + ontime'].append(itemno.encode('ascii'))
               else:
                   for path in truepaths:
@@ -47,8 +63,9 @@ def parseOSfile(osfn):
                     branchpaths.append([])
                     colheader = col.cells[0].paragraphs[0].text
                     for par in col.cells[1].paragraphs:
-                        if re.match(itemno_pat,par.text):
-                            itemno = par.text.split('.')[0].replace(' ','').zfill(3)
+                        tempnum = getItemNum(par.text)
+                        if tempnum:
+                            itemno = tempnum
                         #elif re.match('^same',par.text.lower()):   # Removing this because it's not used in the weak
                         #   itemno = defaultitemno                  # but potentially causes problems.
                         else: itemno = ''
