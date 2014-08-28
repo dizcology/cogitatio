@@ -16,13 +16,13 @@ def parseOSfile(osfn):
     # First, go through the paragraphs and pull out any numbers starting lines.
         if re.match(' ?[0-9][0-9][0-9]?\.',par.text):
             itemno = par.text.split('.')[0].replace(' ','').zfill(3)
-            if 'skip if behind' in par.text.lower():
+            if 'skip if behind' in par.text.lower():                     
                 paths['weak + ontime'].append(itemno.encode('ascii'))
             else:
                 for path in truepaths:
                     paths[path].append(itemno.encode('ascii'))
 
-    osfile = Document(osfn)
+    osfile = Document(osfn)                     #---------------WHY REINITIALIZE OSFILE???
     for tab in osfile.tables:
     # Next, go through the tables.
         branchpaths = []        # Keep track of "undefined" branches - i.e. those not defined by strength and speed
