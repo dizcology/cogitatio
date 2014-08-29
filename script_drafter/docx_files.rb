@@ -78,8 +78,14 @@ class DOCX
     @cmt.at(".//w:comment")["w:initials"]="KE"
 
     @doc.xpath(".//w:p").each do |p|
-      if p.content.strip.include?("$characters")
-        p.replace($chr)
+      if p.content.strip.match(/\$char(\d{2})/)
+        p.content.strip.scan(/\$char(\d{2})/).each do |x|
+          
+          i=x[0][0].to_i
+          j=x[0][1].to_i
+          str=$chr.rows[i].cells[j].content.strip
+          p.rep("$char"+x[0],str)
+        end
       end
     end
     
