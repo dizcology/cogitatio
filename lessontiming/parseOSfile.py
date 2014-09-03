@@ -43,9 +43,12 @@ def parseOSfile(osfn):
         if  len(tab.columns)==1:
             col=tab.columns[0]
             for par in col.cells[0].paragraphs+col.cells[1].paragraphs: #temporary fix until everyone uses the new templates of script_drafter
+                
                 tempnum = getItemNum(par.text)
                 if tempnum:
                     itemno = tempnum
+                    break   #there was an error with the call par.text above, this avoids that but relies on correctly formatted tables.
+                    
             for par in col.cells[0].paragraphs:
               if 'quiz' in par.text.lower():
                   pass
