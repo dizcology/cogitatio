@@ -42,7 +42,12 @@ def parseOSfile(osfn):
         branchpaths = []        # Keep track of "undefined" branches - i.e. those not defined by strength and speed
         if  len(tab.columns)==1:
             col=tab.columns[0]
-            for par in col.cells[0].paragraphs+col.cells[1].paragraphs: #temporary fix until everyone uses the new templates of script_drafter
+            
+            if len(col.cells)>=2:
+                checkpars = col.cells[0].paragraphs+col.cells[1].paragraphs
+            else:
+                checkpars = col.cells[0].paragraphs
+            for par in checkpars: #temporary fix until everyone uses the new templates of script_drafter
                 
                 tempnum = getItemNum(par.text)
                 if tempnum:
