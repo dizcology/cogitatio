@@ -413,6 +413,10 @@ class DOCX
         end
       end
       
+      #useful debugging: when the code fails to catch branches ("no implicit conversion from nil to integer in []")
+      #print branches
+      #gets
+      
       next if branches==[]  #danger!
 
       i=5-nrow  #bad, expected row index to copy os stuff from
