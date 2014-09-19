@@ -429,6 +429,9 @@ class DOCX
       rows.each do |row|
         j=0 #column index in the table
         
+        #print branches
+        #gets
+        
         unless i==1
           row.cells.each do |cell|
             

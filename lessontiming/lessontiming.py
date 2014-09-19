@@ -150,10 +150,10 @@ if os.path.isfile(runpath+"lesson_times.csv"):
   for line in oldtimes:
     if len(line.strip().split(","))==4:
       [lsn,ke,ontm,behnd] = line.strip().split(",")
-      times[lsn]={"KE":ke, "ontime":ontm, "behind":behnd}
+      times[lsn.strip().zfill(3)]={"KE":ke, "ontime":ontm, "behind":behnd}
 
-  times[lesson]={}
-  times[lesson]={"KE":"??", "ontime":newtime["ontime"], "behind":newtime["behind"]} #need to pull KE's name from somewhere
+  times[lesson.strip().zfill(3)]={}
+  times[lesson.strip().zfill(3)]={"KE":"??", "ontime":newtime["ontime"], "behind":newtime["behind"]} #need to pull KE's name from somewhere
   
   sorted_keys=sorted(times.keys())
 
