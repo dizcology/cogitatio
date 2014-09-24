@@ -55,10 +55,16 @@ class DOCX
           str=itm
         end
 
+        #print str
+        #gets
+        
         t.rep("$script",str)
 
       end
     
+      #print $preamble
+      #gets
+      
       $preamble.each do |k,v|
         t.rep("$"+k,v)
       end
@@ -77,9 +83,14 @@ class DOCX
     @cmt.at(".//w:comment")["w:date"]=DateTime.now.to_s
     @cmt.at(".//w:comment")["w:initials"]="KE"
 
+    
+    
     @doc.xpath(".//w:p").each do |p|
       if p.content.strip.match(/\$char(\d{2})/)
         p.content.strip.scan(/\$char(\d{2})/).each do |x|
+          
+          #print $chr.content.strip
+          #gets
           
           i=x[0][0].to_i
           j=x[0][1].to_i
@@ -468,10 +479,17 @@ class DOCX
     tb0=@doc.at(".//w:tbl")
     ary=tb0.rows.map{|x| x.cells.map{|y| y.content.strip}}
     $preamble=Hash[ary.map{|p| [p[0].downcase,p[1]]}]
+    
+    #print $preamble
+    #gets
+    
     $preamble.delete("lesson")
     $preamble["lesson_num"]=$lesson
     $preamble["lesson_type"]=$preamble["lesson type"]
     $preamble["teacher"]=$preamble["author"]
+    
+    #print $preamble
+    #gets
 
     tb0.remove
     

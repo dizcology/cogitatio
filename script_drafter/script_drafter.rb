@@ -10,7 +10,7 @@ require_relative 'xml_nodes.rb'
 require_relative 'docx_files.rb'
 require_relative 'dialog_boxes'  #TODO: have a distribution folder set up
 
-$debug=true
+$debug=false
 
 #$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
@@ -200,15 +200,16 @@ Dir.chdir($PATH)
 fos_name=$lesson+os+ext
 $os_exists=(File.exists?(fos_name))? 1:0
 
-fp=DOCX.open(f_plan+ext)
+#fp=DOCX.open(f_plan+ext)
 
-if $os_exists==0
+if $os_exists==0 || $debug
   rc=show("OS file #{fos_name} not found, generate OS draft?","Generate OS?",$YESNO)
   if rc==7
     puts "Exiting"
     exit
   elsif rc==6
     print "Generating #{fos_name}... "
+    fp=DOCX.open(f_plan+ext)
     fp.extract_cells1
     fos.add_os
     fos.save($PATH+fos_name)
@@ -243,6 +244,7 @@ if $os_exists==1
   elsif rc==6
   
     puts "Generating script drafts... "
+    fp=DOCX.open(f_plan+ext)
     fp.extract_cells1
     fos=DOCX.open($PATH+fos_name)
     fos.extract_os
