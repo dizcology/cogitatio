@@ -322,10 +322,11 @@ testing=true
 if testing==true
 
   $RUNPATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\"
-  $PATH="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\"
+  $PATH=$RUNPATH #"C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\"
   Dir.chdir($PATH)
-  metric_path="C:\\Users\\yliu\\SkyDrive\\RM-synced\\ANALYSIS REPORT\\Metrics_Report-Curtis ES-05_AUG_2012-27_JUL_2013.csv"
-  template_path="C:\\Users\\yliu\\SkyDrive\\RM-synced\\cogitatio\\report\\2013-2014 Data Reporting Template - Copy.pptx"
+  metric_path=$RUNPATH+"metrics\\Metrics_Report.csv"
+  template_path=$RUNPATH+"templates\\2013-2014 Data Reporting Template tagged.pptx"
+  out_path = $RUNPATH+"outputs\\"
 else
 
   tle1="Open metric report file."
@@ -348,6 +349,11 @@ metric_path_R="\""+metric_path.gsub("\\","/")+"\""
 metric_name=metric_path.split("\\")[-1].split(".")[0]
 template_type=template_path.split(".")[-1]
 
+puts template_type
+puts metric_name
+
+exit
+
 source_R="\"C:/Users/yliu/SkyDrive/RM-synced/cogitatio/report/agg.r\""
 preamble = <<EOF
   source(#{source_R})
@@ -360,7 +366,7 @@ R.eval(preamble)
 
 metric=File.open(metric_path,"r")
 
-mf=File.open($RUNPATH+"measures_template.csv")
+mf=File.open(template_path+"measures_template.csv")
 
 mf.each do |line|
   #the Measure object with mid="MID" records the header row of measures.csv
