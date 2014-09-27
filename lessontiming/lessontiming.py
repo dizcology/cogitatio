@@ -45,6 +45,7 @@ for branch in paths['branches']:
 allitems = sorted(list(set(allitems)))
 
 itemstats = {}
+itemnotes = {}
 
 itemcoefficients = {
         'submit time': 0.302,
@@ -118,10 +119,12 @@ with open(csvfilename,'w') as csvfile:
             itemstats[item] = {}
             csvfile.write(i + ',,(file not found)\n')
         else:
-            itemstats[item] = getlessonitemstats(itemfile)
+            itemstats[item] , itemnotes[item] = getlessonitemstats(itemfile)
             print i.ljust(15) + timeFormat(predLength(itemstats[item],itemcoefficients)).rjust(10)
             csvfile.write(i + ',' + timeFormat(predLength(itemstats[item],itemcoefficients)) + '\n')
 
+        print itemnotes[item]
+    
     csvfile.write('\ndescription,time,path\n')
 
     branchpath = []

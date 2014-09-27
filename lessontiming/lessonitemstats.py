@@ -46,6 +46,9 @@ def getLength(text,wavfn):
 
 def getStats(text,style):
     '''Get various statistics of the text.'''
+    
+    notes = []
+    
     submittime = 0
     wtdc = 0
     nextc = 0
@@ -60,8 +63,8 @@ def getStats(text,style):
     #raw_input()
 
     if 'submit' in text.lower():
-        if re.search('[0-9]+:[0-9][0-9]',text):
-            time = re.search('[0-9]+:[0-9][0-9]',text).group(0)
+        if re.search('[0-9]+:[0-9]\s*[0-9]',text):
+            time = re.search('[0-9]+:[0-9][0-9]',text.replace(' ','')).group(0)
             time = time.split(':')
             stime = int(time[0])*60+int(time[1])
             submittime += stime
@@ -90,11 +93,13 @@ def getStats(text,style):
         elif 'short' in text.lower():
             submittime += 10
             shortcount += 1
+        elif 'active' not in text.lower():
+            notes.append("missing timer in:\n"+text.lower().replace('submit','SUBMIT'))
     if 'wtd' in text.lower() and not 'disappears' in text.lower():
         wtdc += 1
     if '[next' in text.lower():
         nextc += 1
-    return [submittime,wtdc,nextc,shortcount,medcount,longcount,nonstandardsubmittime,longsubmittime]
+    return [submittime,wtdc,nextc,shortcount,medcount,longcount,nonstandardsubmittime,longsubmittime], notes
 
 def getBranchText(text,style,inNR):
     '''Get text in the "main" and "NoResponse" branches.'''
@@ -161,6 +166,8 @@ def getlessonitemstats(itemfn):
     doc = Document(itemfn)
     wavfn = itemfn.replace('docx','wav')
 
+    notes = []
+    
     submittime = 0
     wtdc = 0
     nextc = 0
@@ -194,8 +201,9 @@ def getlessonitemstats(itemfn):
                     if t.text is None:
                         pass
                     else:
-                        text += ' ' + t.text
+                        text += '' + t.text    #why add white spaces?
         text = re.sub('^ ','',text)
+        
 
         # Track if we're in a No Response branch
         if style == 'NoResponse' or style == 'SecondaryNoResponse': inNR = True
@@ -239,7 +247,8 @@ def getlessonitemstats(itemfn):
             branchcount = 0
 
 
-        temp = getStats(text,style)
+        temp, newnotes = getStats(text,style)
+        notes += newnotes
         submittime += temp[0]
         wtdc += temp[1]
         nextc += temp[2]
@@ -277,7 +286,8 @@ def getlessonitemstats(itemfn):
             'long submit time': longcustomtime,
             'corrects per branch': avgcorrcount,
             'branch count': branchnum,
-            }
+            }, notes
+            
 
 if __name__ == '__main__':
     Tk().withdraw()
