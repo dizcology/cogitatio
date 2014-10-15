@@ -170,22 +170,22 @@ class DOCX
 
             nn.rep($type[i],cnt2.gsub(rr,""))
             
-            if i== 5 || i== 12 #add tutor's response
-              
-              if !($resp[$tutor].nil?)
-
-                begin
-                  rsp = $resp[$tutor].sample
-                end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0] && !(prev_rsp.include?(rsp)))
-                $resp_count[$tutor][rsp][1]+=1  #count the times rsp is used
-                prev_rsp[i]=rsp
-
-              else
-                rsp="That's right."
-              end
-              
-              nn.rep("$right.",rsp)
-            end
+            #if i== 5 || i== 12 #add tutor's response
+            #  
+            #  if !($resp[$tutor].nil?)
+            #
+            #    begin
+            #      rsp = $resp[$tutor].sample
+            #    end until ($resp_count[$tutor][rsp][1]<$resp_count[$tutor][rsp][0] && !(prev_rsp.include?(rsp)))
+            #    $resp_count[$tutor][rsp][1]+=1  #count the times rsp is used
+            #    prev_rsp[i]=rsp
+            #
+            #  else
+            #    rsp="That's right."
+            #  end
+            #  
+            #  nn.rep("$right.",rsp)
+            #end
             
           end 
 
@@ -392,13 +392,13 @@ class DOCX
     
     $tutor=$chr.rows[0].cells[1].content.strip.downcase #getting tutor's name
     
-    if !($tutors.include?($tutor))
-      rc=showmessage("Incorrect tutor name: \"#{$chr.rows[0].cells[1].content.strip}\".  Proceed? \n (All correct responses will be set to \"That's right.\")","WARNING",$WARNING)
-      if rc==7
-        puts "Exiting."
-        exit
-      end
-    end
+    #if !($tutors.include?($tutor))
+    #  rc=showmessage("Incorrect tutor name: \"#{$chr.rows[0].cells[1].content.strip}\".  Proceed? \n (All correct responses will be set to \"That's right.\")","WARNING",$WARNING)
+    #  if rc==7
+    #    puts "Exiting."
+    #    exit
+    #  end
+    #end
     
     @doc.at(".//w:tbl").remove  #remove the characters table
     
@@ -622,11 +622,11 @@ class DOCX
             target << [7,row[0]]
           end
           
-          unless row[2].content.include?($tag["cut"]) || row[2].strike!.content.strip=="" || row[1].content.include?($tag["cut"]) || row[1].strike!.content.strip==""
-              row[2].xpath(".//w:commentReference").each do |cr|
+          unless row[2].content.include?($tag["cut"]) || row[2].strike!.content.strip=="" || row[1].content.include?($tag["cut"]) || row[1].strike!.content.strip=="" || row[2].content.strip.remove_brackets.strip == ""
+            row[2].xpath(".//w:commentReference").each do |cr|
 
-              target << [19, $comments[cr.attribute("id").to_s.strip]]
-            end
+            target << [19, $comments[cr.attribute("id").to_s.strip]]
+          end
           
             if row[2].content.include?($tag["tutor"])
               target << [1+flag,row[2]]
@@ -640,6 +640,8 @@ class DOCX
             elsif row[2].content.include?($tag["strong"]) 
               target << [4+flag,row[2]]
               $word_count[$item]+=row[2].content.split(" ").size
+            elsif row[2].content.remove_brackets.strip == ""
+              #nothing
             else
               target << [5+flag,row[2]]
               $word_count[$item]+=row[2].content.split(" ").size

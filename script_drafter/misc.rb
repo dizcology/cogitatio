@@ -33,6 +33,15 @@ class String
     
     return false
   end
+  
+  def remove_brackets
+    r = /(\[[^\[\]]*\])/
+    temp = self.dup
+    while temp.match(r)
+      temp.gsub!(r, "")
+    end
+    return temp
+  end
 end
 
 class NilClass
