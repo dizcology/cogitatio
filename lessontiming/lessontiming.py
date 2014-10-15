@@ -98,7 +98,8 @@ def lessonStats(itemstats):
             if feat in i:
                 lessonstats[feat] += i[feat]
 
-    lessonstats['corrects per branch'] = lessonstats['total corrects']/lessonstats['branch count']
+    if lessonstats['branch count'] != 0:
+        lessonstats['corrects per branch'] = lessonstats['total corrects']/lessonstats['branch count']
 
     return lessonstats
 
@@ -123,7 +124,7 @@ with open(csvfilename,'w') as csvfile:
             print i.ljust(15) + timeFormat(predLength(itemstats[item],itemcoefficients)).rjust(10)
             csvfile.write(i + ',' + timeFormat(predLength(itemstats[item],itemcoefficients)) + '\n')
 
-        print itemnotes[item]
+        # print itemnotes[item]
     
     csvfile.write('\ndescription,time,path\n')
 

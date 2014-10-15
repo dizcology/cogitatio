@@ -2,8 +2,13 @@ from docx import *
 import re
 
 def getItemNum(string):
-    itemno_pat=r'^\d{2,3}'
-    res=re.findall(itemno_pat,string)
+    itemno_pat=r'^\d{3}(?=[^0-9])'
+    res=re.findall(itemno_pat,string.strip())
+    
+    
+    #print res
+    #raw_input()
+    
     if res:
         return res[0].zfill(3)
     else:
@@ -26,6 +31,8 @@ def parseOSfile(osfn):
     for par in osfile.paragraphs:   
     # First, go through the paragraphs and pull out any numbers starting lines.
         tempnum=getItemNum(par.text)
+        
+        
         if tempnum:
             itemno = tempnum
             if 'quiz' in par.text.lower():
@@ -34,7 +41,8 @@ def parseOSfile(osfn):
                 paths['weak + ontime'].append(itemno.encode('ascii'))
             else:
                 for path in truepaths:
-                    paths[path].append(itemno.encode('ascii'))
+                    paths[path].append(itemno.encode('ascii'))  
+                
 
     osfile = Document(osfn)
     for tab in osfile.tables:
@@ -99,10 +107,19 @@ def parseOSfile(osfn):
             if sum([len(p) for p in branchpaths]) > 0:
                 paths['branches'].append(branchpaths)
 
+    
+    print paths
+    #raw_input()
+    
     for path in truepaths: 
         #paths[path] = sorted(list(set(paths[path])))        # Remove duplicates and sort... but why should there be duplicates?
         while "" in paths[path]:
           paths[path].remove("")
         
         paths[path] = sorted(list(set(paths[path])))
+    
     return paths
+    
+    
+    
+    

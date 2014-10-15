@@ -201,9 +201,14 @@ def getlessonitemstats(itemfn):
                     if t.text is None:
                         pass
                     else:
-                        text += '' + t.text    #why add white spaces?
+                        text += ' ' + t.text    #why add white spaces?
+        #print text
         text = re.sub('^ ','',text)
-        
+        #text = text.strip().lower()
+        #text = re.sub(r'(^t\s|^s\s|^a\s|^w\s)','',text)
+        #text = text.replace(u'\u2019',"'")
+        #print text
+        #raw_input()
 
         # Track if we're in a No Response branch
         if style == 'NoResponse' or style == 'SecondaryNoResponse': inNR = True
@@ -215,6 +220,10 @@ def getlessonitemstats(itemfn):
         elif inNR: inBranch = False
 
         if re.match('^correct',text.lower()) or re.match('^incorrect',text.lower()) or re.match('^no response',text.lower()):
+            
+            #print text, str(branchnum)
+            #raw_input()
+            
             branchcount += 1
             if re.match('^correct',text.lower()):
                 avgcorrcount += 1
@@ -270,6 +279,9 @@ def getlessonitemstats(itemfn):
     MLtime = getLength(MLtext,wavfn.replace('.wav','-main.wav'))
     NRtime = getLength(NRtext,wavfn.replace('.wav','-NR.wav'))
 
+    #print itemfn, branchnum
+    #raw_input()
+    
     return {
             'submit time': submittime, 
             'WTD count': wtdc,
