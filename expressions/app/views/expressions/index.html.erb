@@ -1,0 +1,24 @@
+<div>
+Input a simplified expression: (such as 3x+7y)
+<br>
+<%= form_for :expression, controller: "expressions", action: "create" do |f|%>
+  <%= f.text_field :input %>
+  <br>
+  <%= f.check_box :leading_plus %> Allow + at the beginning.
+  <br>
+  <%= f.submit :Submit %>
+<% end %>
+</div>
+<br><br>
+Your input was: <%= session[:input] %>
+<br><br>
+Equivalent expressions are: <%= session[:result] %>
+<br><br>
+<% if session[:result] %>
+  There are <%= session[:result].size %> terms
+  <br><br>
+  Assembled: <%= "\""+session[:result].join("\" OR \"")+"\"" %>
+<% end %>
+
+
+

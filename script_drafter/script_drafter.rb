@@ -202,7 +202,7 @@ $os_exists=(File.exists?(fos_name))? 1:0
 
 #fp=DOCX.open(f_plan+ext)
 
-if $os_exists==0 || $debug
+if $os_exists==0 #|| $debug
   rc=show("OS file #{fos_name} not found, generate OS draft?","Generate OS?",$YESNO)
   if rc==7
     puts "Exiting"

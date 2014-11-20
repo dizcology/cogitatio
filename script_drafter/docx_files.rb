@@ -77,6 +77,9 @@ class DOCX
     
     @cmt.rep("$comment",$os_stuff[numm][-1][1].content.strip)
     
+    # sometimes KE uses angled brackets in the OS table, and this confuses nokogiri
+    #puts $os_stuff[numm][-1][1].content.strip
+    #gets
 
     @cmt.at(".//w:comment")["w:id"]=cmt_count.to_s
     @cmt.at(".//w:comment")["w:author"]="KE"

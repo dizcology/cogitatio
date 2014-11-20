@@ -28,7 +28,7 @@ class Nokogiri::XML::Node
     self
   end
 
-    def rows
+  def rows
     return nil unless self.is_tbl?
     
     rows=Array.new
