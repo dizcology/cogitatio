@@ -413,6 +413,8 @@ class DOCX
       branches=Array.new 
       rows=tbl.rows
 
+      next if rows.size<2 #ugh
+      
       nrow=rows.size
       
       (rows[1].xpath(".//w:tc").to_a+rows[0].xpath(".//w:tc").to_a).each do |cell|
