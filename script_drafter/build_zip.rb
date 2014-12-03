@@ -13,6 +13,10 @@ files=["script_drafter_beta.exe", "README.docx", "resources/OS_template.docx","r
 
 zipped="script_drafter_"+DateTime.now.to_s[0..9]+".zip"
 
+if File.exists?(zipped)
+  File.delete(zipped)
+end
+
 Zip::File.open(zipped, Zip::File::CREATE) do |z|
   files.each do |f|
     z.add(f,f)

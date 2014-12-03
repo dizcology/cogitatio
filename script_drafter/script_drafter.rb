@@ -10,7 +10,12 @@ require_relative 'xml_nodes.rb'
 require_relative 'docx_files.rb'
 require_relative 'dialog_boxes'  #TODO: have a distribution folder set up
 
-$debug = true
+$debug = false
+
+if $debug
+  puts "debugging mode, press any key to continue."
+  gets
+end
 
 #$PATH="C:/Users/"+username+"/Google Drive/Knowledge Engineering/Lessons - Basic IV/026/drafter/"  #path to the files
 
